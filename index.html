@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Consulta Admisión UBAC</title>
+</head>
+<body style="font-family:Arial, sans-serif; padding:20px; max-width:600px; margin:auto;">
+<h2 style="text-align:center;">Consulta tu admisión</h2>
+<form id="admissionForm">
+  <label>Nombre y Apellido:<br>
+    <input type="text" id="fullname" required style="width:100%; padding:6px; margin-bottom:10px;">
+  </label><br>
+  <label>Cédula:<br>
+    <input type="text" id="idNumber" required style="width:100%; padding:6px; margin-bottom:10px;">
+  </label><br>
+  <label>Carrera:<br>
+    <select id="career" required style="width:100%; padding:6px; margin-bottom:10px;">
+      <option value="">-- Selecciona una carrera --</option>
+      <option>Animación Digital</option>
+      <!-- ...todas las demás... -->
+      <option>Psicología</option>
+    </select>
+  </label><br>
+  <button type="button" onclick="generatePDF()" style="padding:10px 20px;">Generar PDF</button>
+</form>
+
+<script>
+function generatePDF() {
+  const fullname = document.getElementById('fullname').value.trim();
+  const idNumber = document.getElementById('idNumber').value.trim();
+  const career = document.getElementById('career').value;
+
+  if (!fullname || !idNumber || !career) {
+    alert('Por favor, completa todos los campos.');
+    return;
+  }
+
+  const fecha = new Date().toLocaleString('es-ES');
+  const contenido = `
+    <html><head><title>Consulta Admisión UBAC</title></head>
+    <body style="font-family:Arial, sans-serif; padding:20px;">
+      <h2>UNIVERSIDAD BOLDT ARTES & CIENCIAS</h2>
+      <p><strong>ID Aplicación:</strong> ${idNumber}</p>
+      <p><strong>Fecha:</strong> ${fecha}</p>
+      <h3>Consulta de Admisión</h3>
+      <p><strong>Nombre:</strong> ${fullname}</p>
+      <p><strong>Carrera:</strong> ${career}</p>
+      <hr>
+      <p>En nombre de la UNIVERSIDAD BOLDT Artes & Ciencias...</p>
+      <hr>
+      <p style="font-size:7pt; color:#777;">
+        Aviso Importante<br>
+        Este documento es parte de una creación artística...
+      </p>
+    </body></html>
+  `;
+
+  const win = window.open('', '_blank');
+  win.document.write(contenido);
+  win.document.close();
+  win.onload = function() {
+    win.print();
+  };
+}
+</script>
+</body>
+</html>
