@@ -1,67 +1,136 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<title>Consulta Admisión UBAC</title>
+  <meta charset="UTF-8" />
+  <title>Consulta de Admisión - Universidad Boldt</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input, select {
+      width: 100%;
+      padding: 6px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+    }
+    .footer {
+      font-size: 7pt;
+      color: #555;
+      margin-top: 40px;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+      text-align: center;
+    }
+  </style>
 </head>
-<body style="font-family:Arial, sans-serif; padding:20px; max-width:600px; margin:auto;">
-<h2 style="text-align:center;">Consulta tu admisión</h2>
-<form id="admissionForm">
-  <label>Nombre y Apellido:<br>
-    <input type="text" id="fullname" required style="width:100%; padding:6px; margin-bottom:10px;">
-  </label><br>
-  <label>Cédula:<br>
-    <input type="text" id="idNumber" required style="width:100%; padding:6px; margin-bottom:10px;">
-  </label><br>
-  <label>Carrera:<br>
-    <select id="career" required style="width:100%; padding:6px; margin-bottom:10px;">
-      <option value="">-- Selecciona una carrera --</option>
-      <option>Animación Digital</option>
-      <!-- ...todas las demás... -->
-      <option>Psicología</option>
-    </select>
-  </label><br>
-  <button type="button" onclick="generatePDF()" style="padding:10px 20px;">Generar PDF</button>
-</form>
+<body>
+  <h2 style="text-align: center;">Consulta tu admisión</h2>
+  <form id="admissionForm">
+    <label>Nombre y Apellido:
+      <input type="text" id="fullname" required>
+    </label>
+    <label>Cédula:
+      <input type="text" id="idNumber" required>
+    </label>
+    <label>Carrera:
+      <select id="career" required>
+        <option value="">-- Selecciona una carrera --</option>
+        <option>Animación Digital</option>
+        <option>Antropología</option>
+        <option>Arquitectura</option>
+        <option>Artes Escénicas</option>
+        <option>Artes Visuales</option>
+        <option>Bellas Artes</option>
+        <option>Biología</option>
+        <option>Ciencia Forense</option>
+        <option>Ciencias Políticas</option>
+        <option>Cine y Producción</option>
+        <option>Comunicación Social</option>
+        <option>Derecho</option>
+        <option>Diseño de Interiores</option>
+        <option>Diseño de Modas</option>
+        <option>Diseño Gráfico</option>
+        <option>Economía</option>
+        <option>Física Aplicada</option>
+        <option>Física Biomédica</option>
+        <option>Fotografía</option>
+        <option>Ingeniería Informática</option>
+        <option>Neurociencias</option>
+        <option>Psicología</option>
+      </select>
+    </label>
+    <button type="button" onclick="generatePDF()">Generar PDF</button>
+  </form>
 
-<script>
-function generatePDF() {
-  const fullname = document.getElementById('fullname').value.trim();
-  const idNumber = document.getElementById('idNumber').value.trim();
-  const career = document.getElementById('career').value;
+  <div class="footer">
+    Aviso Importante<br>
+    Este documento es parte de una creación artística y carece de validez legal o académica. Fue generado a través de www.universidadboldt.com, un sitio web ficticio inmerso en la serie cinematográfica "Anillos de Linaje".
+  </div>
 
-  if (!fullname || !idNumber || !career) {
-    alert('Por favor, completa todos los campos.');
-    return;
-  }
+  <script>
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
 
-  const fecha = new Date().toLocaleString('es-ES');
-  const contenido = `
-    <html><head><title>Consulta Admisión UBAC</title></head>
-    <body style="font-family:Arial, sans-serif; padding:20px;">
-      <h2>UNIVERSIDAD BOLDT ARTES & CIENCIAS</h2>
-      <p><strong>ID Aplicación:</strong> ${idNumber}</p>
-      <p><strong>Fecha:</strong> ${fecha}</p>
-      <h3>Consulta de Admisión</h3>
-      <p><strong>Nombre:</strong> ${fullname}</p>
-      <p><strong>Carrera:</strong> ${career}</p>
-      <hr>
-      <p>En nombre de la UNIVERSIDAD BOLDT Artes & Ciencias...</p>
-      <hr>
-      <p style="font-size:7pt; color:#777;">
-        Aviso Importante<br>
-        Este documento es parte de una creación artística...
-      </p>
-    </body></html>
-  `;
+      const fullname = document.getElementById('fullname').value.trim();
+      const idNumber = document.getElementById('idNumber').value.trim();
+      const career = document.getElementById('career').value;
 
-  const win = window.open('', '_blank');
-  win.document.write(contenido);
-  win.document.close();
-  win.onload = function() {
-    win.print();
-  };
-}
-</script>
+      if (!fullname || !idNumber || !career) {
+        alert('Por favor completa todos los campos.');
+        return;
+      }
+
+      const fecha = new Date().toLocaleString('es-ES');
+      const doc = new jsPDF();
+
+      // Escudo superior izquierdo
+      const imgUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/UN-logo.svg/120px-UN-logo.svg.png';
+      const img = new Image();
+      img.src = imgUrl;
+
+      img.onload = () => {
+        doc.addImage(img, 'PNG', 10, 10, 25, 25);
+
+        doc.setFontSize(18);
+        doc.text("UNIVERSIDAD BOLDT", 105, 20, null, null, "center");
+        doc.setFontSize(12);
+        doc.text("Facultad de Artes & Ciencias", 105, 28, null, null, "center");
+
+        doc.setFontSize(11);
+        doc.text(`ID de Aplicación: ${idNumber}`, 20, 45);
+        doc.text(`Fecha: ${fecha}`, 20, 52);
+        doc.text(`Estudiante: ${fullname}`, 20, 60);
+        doc.text(`Carrera seleccionada: ${career}`, 20, 68);
+
+        const mensaje = `En nombre de la UNIVERSIDAD BOLDT Artes & Ciencias, nos complace informarte que tu solicitud ha sido evaluada rigurosamente para la postulación en la carrera de ${career} en nuestra institución.
+
+Tu pasión, dedicación y talento han brillado entre miles formando así parte de una comunidad comprometida con transformar el mundo a través del conocimiento y la innovación.
+
+Desafortunadamente nuestros cupos son limitados y se otorgan mediante una selección prioritaria y por orden de recepción. Valoramos tu entusiasmo al postularte en nuestra alma mater pero en este momento no podemos procesar una admisión para ti.`;
+
+        doc.setFontSize(11);
+        doc.text(doc.splitTextToSize(mensaje, 170), 20, 80);
+
+        doc.setFontSize(7);
+        doc.text(
+          "Este documento es parte de una creación artística y carece de validez legal o académica. Fue generado a través de www.universidadboldt.com, un sitio web ficticio inmerso en la serie cinematográfica 'Anillos de Linaje'.",
+          20, 275
+        );
+
+        doc.save(`admisión-${fullname}.pdf`);
+      };
+    }
+  </script>
 </body>
 </html>
